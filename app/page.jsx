@@ -1,13 +1,48 @@
-import Link from 'next/link'
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 
 export default function Home() {
+  const [content, setContent] = useState('')
+  const [slug, setSlug] = useState('')
+  const router = useRouter()
+
+  const handleSave = async () => {
+    if (!slug || !content) return alert('Slug dan isi catatan wajib diisi!')
+    
+    const { error } = await supabase.from('notes').insert([{ slug, content }])
+    if (error) {
+      alert('Gagal menyimpan: ' + error.message)
+    } else {
+      router.push(`/${slug}`)
+    }
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center h-[80vh] text-center">
-      <h1 className="text-xl font-bold mb-2">Minimal Notepad</h1>
-      <p className="text-xs text-zinc-500 mb-4">Buat dan bagikan catatan teks minimalis Anda.</p>
-      <Link href="/new" className="text-xs text-zinc-300 underline hover:text-white">
-        &larr; Buat catatan baru
-      </Link>
+    <div className="max-w-xl mx-auto p-4 flex flex-col h-screen bg-zinc-950 text-zinc-100 font-mono">
+      <div className="flex justify-between items-center mb-4 pt-4 border-b border-zinc-800 pb-3">
+        <input
+          type="text"
+          placeholder="ketik-slug-url-catatan"
+          value={slug}
+          onChange={(e) => setSlug(e.target.value)}
+          className="bg-transparent border-b border-zinc-700 text-sm p-1 outline-none text-zinc-200 w-1/2"
+        />
+        <button
+          onClick={handleSave}
+          className="text-xs bg-zinc-800 px-4 py-1.5 rounded text-zinc-300 hover:text-white border border-zinc-700"
+        >
+          Simpan Catatan
+        </button>
+      </div>
+      <textarea
+        placeholder="Tulis catatan minimalis Anda di sini..."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        className="w-full flex-1 bg-transparent resize-none outline-none text-sm text-zinc-300 leading-relaxed pt-2"
+      />
     </div>
   )
 }
