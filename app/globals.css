@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-textarea, pre {
-  background: transparent;
-  outline: none;
-  border: none;
-  resize: none;
+body {
+  background-color: #09090b;
+  color: #f4f4f5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
